@@ -11,7 +11,7 @@ class AddItem extends Component {
     handleSubmit = async e => {
         this.setState({loading: true});
         e.preventDefault();
-        await fetch('/api/add-item', {
+        const resp = await fetch('/api/add-item', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,6 +24,9 @@ class AddItem extends Component {
                 checkedOut: false
             })
         });
+        const items = await resp.text();
+        console.log(items);
+        this.props.updateItems(items);
     };
 
     render() {

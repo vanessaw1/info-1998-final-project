@@ -8,7 +8,7 @@ class CampusSpaces extends Component {
         items: [],
         locations: [],
         loading: true,
-        currentLocation: "olin"
+        currentLocation: "duffield"
     }
 
     componentDidMount = () => {
@@ -20,9 +20,13 @@ class CampusSpaces extends Component {
         .then(responseJSON => this.setState({items: responseJSON, loading: false}));
     }
 
-    // componentDidUpdate = () => {
-        
-    // }
+    // Makes a lot of reads on firebase?
+    updateItems = async (location) => {
+        this.setState({loading: true});
+        fetch('/api/items/' + location, {method: 'GET'})
+        .then(response => response.json())
+        .then(responseJSON => this.setState({currentLocation: location, items: responseJSON, loading: false}));
+    }
 
     render() {
         const locations = this.state.locations;
@@ -40,21 +44,21 @@ class CampusSpaces extends Component {
 
                 <div className="locationSelect">
                     <h1>Select Location:</h1>
-                    {this.state.loading ? "Loading..." : 
-                        <select onChange={(e) => {this.setState({currentLocation: e.target.value})}}>
-                            {locationsDropdown}
-                        </select>
-                    }
-                    
+                    <select onChange={(e) => this.updateItems(e.currentTarget.value)}>
+                        {locationsDropdown}
+                    </select>
                 </div>
 
                 <h1>List of available things in {this.state.currentLocation}:</h1>
-                {this.state.loading ? "Loading..." : <ItemListings data={this.state.items}/>}
+                {this.state.loading ? "Loading..." : 
+                    this.state.items.length === 0 ? "No items listed!" : 
+                    <ItemListings data={this.state.items}/>}
 
                 <h1>Add an item to {this.state.currentLocation}:</h1>
                 <AddItem 
                     username={this.props.currentUser}
                     location={this.state.currentLocation}
+                    updateItems={(i) => this.setState({items: i})}
                 />
             </div>
         );

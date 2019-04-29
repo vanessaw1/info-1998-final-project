@@ -14,47 +14,6 @@ const app = express();
 const port =  process.env.PORT || 8080;
 app.use(bodyParser.json());
 
-
-// // create a post
-// app.put('/post', async (req, resp) => {
-//     const post = req.body;
-//     const addedDoc = await postsCollection.add(post);
-//     resp.status(200).send(addedDoc.id);
-// });
-
-// // read all posts
-// app.get('/post', async (_, resp) => {
-//     const allPostsDoc = await postsCollection.get();
-//     resp.status(200).json(allPostsDoc.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-// });
-
-// app.get('/post/today', async (_, resp) => {
-//     const today = new Date();
-//     const todayString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-//     const todayPostsDoc = await postsCollection.where('date', '==', todayString).get();
-//     resp.status(200).json(todayPostsDoc.docs.map(doc => ({id: doc.id, ...doc.data()})));
-// });
-
-// app.get('post/sorted', async (_, resp) => {
-//     const sortedPosts = await postsCollection.orderBy('date', 'desc').limit(3).get();
-//     resp.status(200).json(sortedPosts.docs.map(doc => ({id: doc.id, ...doc.data()})));
-// });
-
-// // update a post
-// app.post('/post/:id', async (req, res) => {
-//     const id = req.params['id'];
-//     const newPost = req.body;
-//     await postsCollection.doc(id).id(updatePost);
-//     res.status(200).send('UPDATED');
-// });
-
-// // delete a post
-// app.post('/post/:id', async (req, res) => {
-//     const id = req.params['id'];
-//     await postsCollection.doc(id).delete();
-//     res.status(200).send('DELETED');
-// });
-
 const itemsCollection = db.collection('items');
 const locationsCollection = db.collection('locations');
 const usersCollection = db.collection('users');
@@ -76,7 +35,7 @@ app.get('/api/locations', async (req, res) => {
 app.post('/api/add-item', async (req, res) => {
     const item = req.body;
     await itemsCollection.add(item);
-    res.status(200).send("OK");
+    res.status(200).send("added");
 });
 
 // Sign in
