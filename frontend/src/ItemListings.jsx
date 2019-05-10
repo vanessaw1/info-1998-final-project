@@ -4,7 +4,7 @@ import ItemListing from './ItemListing';
 
 class ItemListings extends Component {
     render() {
-        const {data} = this.props;
+        const {data, updateItem, deleteItem} = this.props;
         const items = data.map((item, key) => 
             <ItemListing 
                 key = {key}
@@ -13,6 +13,8 @@ class ItemListings extends Component {
                 item={item.item}
                 description={item.description}
                 checkedOut={item.checkedOut}
+                updateItem={updateItem}
+                deleteItem={deleteItem}
             />
         );
 

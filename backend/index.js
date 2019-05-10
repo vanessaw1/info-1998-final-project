@@ -54,7 +54,7 @@ app.post('/api/items/:id', async (req, res) => {
 });
 
 // Delete item
-// Restrict to item owner?
+// Restrict to item owner
 app.delete('/api/items/:id', async (req, res) => {
     const itemId = req.params['id'];
     await itemsCollection.doc(itemId).delete();

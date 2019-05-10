@@ -7,6 +7,7 @@ import AddItem from './AddItem';
 class CampusSpaces extends Component {
     state = {
         items: [],
+        userItems: [],
         locations: [],
         loading: true,
         currentLocation: "duffield"
@@ -24,6 +25,9 @@ class CampusSpaces extends Component {
         fetch('/api/items/location/' + this.state.currentLocation, {method: 'GET'})
         .then(response => response.json())
         .then(responseJSON => this.setState({items: responseJSON, loading: false}));
+        fetch('/api/items/user/' + this.props.currentUser, {method: 'GET'})
+        .then(response => response.json())
+        .then(responseJSON => this.setState({userItems: responseJSON, loading: false}));
     }
 
     // Makes a lot of reads on firebase?
@@ -59,15 +63,26 @@ class CampusSpaces extends Component {
                 <h1>List of available things in {this.state.currentLocation}:</h1>
                 {this.state.loading ? "Loading..." : 
                     this.state.items.length === 0 ? "No items listed!" : 
-                    <ItemListings data={this.state.items}/>}
+                    <ItemListings 
+                        data={this.state.items}
+                        updateItem={(id, checkedOutBy) => this.setState(prevState => ({
+                            items: prevState.items.map(item => (item.id === id ? { ...item, checkedOut: checkedOutBy } : item))
+                        }))}
+                        deleteItem={(id) => this.setState(prevState => ({
+                            items: prevState.items.filter(item => (item.id !== id))
+                        }))}
+                    />}
 
                 <h1>List of your things:</h1>
                 {this.state.loading ? "Loading..." : 
-                    this.state.items.length === 0 ? "No items listed!" : 
+                    this.state.userItems.length === 0 ? "No items listed!" : 
                     <ItemListings 
-                        data={this.state.items}
-                        updateItems={(id, checkedOutBy) => this.setState(prevState => ({
+                        data={this.state.userItems}
+                        updateItem={(id, checkedOutBy) => this.setState(prevState => ({
                             items: prevState.items.map(item => (item.id === id ? { ...item, checkedOut: checkedOutBy } : item))
+                        }))}
+                        deleteItem={(id) => this.setState(prevState => ({
+                            items: prevState.items.filter(item => (item.id !== id))
                         }))}
                     />}
 

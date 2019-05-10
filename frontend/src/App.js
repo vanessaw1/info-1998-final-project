@@ -5,8 +5,8 @@ import Login from './Login';
 
 class App extends Component {
   state = {
-    isLoggedIn: false, // Can be changed using developer tools :(
-    username: ""
+    isLoggedIn: true, // Can be changed using developer tools :(
+    username: "vw96"
   }
 
   render() {

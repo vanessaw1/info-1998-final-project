@@ -2,19 +2,32 @@ import React, {Component} from 'react';
 import './App.css';
 
 class ItemListing extends Component {
-    checkoutItem = async e => {
-        e.preventDefault();
-        const resp = await fetch('/api/items/:id', {
+    
+    checkoutItem = async (checkoutTo) => {
+        const resp = await fetch(`/api/items/${this.props.id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                checkedOut: this.props.username
+                checkedOut: checkoutTo
             })
         });
-        // this.props.updateItems(items);
-    }
+        const text = await resp.text();
+        if (text !== 'updated') {
+            throw new Error(`Error: ${text}`);
+        }
+        this.props.updateItem(this.props.id, checkoutTo);
+    };
+
+    deleteItem = async id => {
+        const resp = await fetch(`/api/items/${id}`, {method: 'DELETE'});
+        const text = await resp.text();
+        if (text !== 'deleted') {
+            throw new Error(`Error: ${text}`);
+        }
+        this.props.deleteItem(this.props.id);
+    };
 
     render() {
         const {id, username, item, description, checkedOut} = this.props;
@@ -33,10 +46,11 @@ class ItemListing extends Component {
                     Description: {description}
                 </div>
                 <div>
-                    Is it checked out?: {checkedOut ? "Yes" : "No"}
+                    Checked out by: {checkedOut ? checkedOut : "No One"}
                 </div>
-                <button onClick={this.checkoutItem}>Checkout Item</button>
-                <button onClick={this.removeItem}>Remove Item</button>
+                <button onClick={() => this.checkoutItem(this.props.username)}>Checkout Item</button>
+                <button onClick={() => this.checkoutItem(null)}>Return Item</button>
+                <button onClick={() => this.deleteItem(this.props.id)}>Remove Item</button>
             </div>
         );
     }
