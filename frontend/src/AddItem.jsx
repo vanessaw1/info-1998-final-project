@@ -27,8 +27,8 @@ class AddItem extends Component {
             })
         });
         const id = await resp.text();
-        const items = {id, username, item, description, location};
-        console.log(items);
+        const checkedOut = null;
+        const items = {id, username, item, description, location, checkedOut};
         this.props.updateItems(items);
     };
 

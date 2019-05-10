@@ -7,7 +7,6 @@ import AddItem from './AddItem';
 class CampusSpaces extends Component {
     state = {
         items: [],
-        userItems: [],
         locations: [],
         loading: true,
         currentLocation: "duffield"
@@ -25,9 +24,6 @@ class CampusSpaces extends Component {
         fetch('/api/items/location/' + this.state.currentLocation, {method: 'GET'})
         .then(response => response.json())
         .then(responseJSON => this.setState({items: responseJSON, loading: false}));
-        fetch('/api/items/user/' + this.props.currentUser, {method: 'GET'})
-        .then(response => response.json())
-        .then(responseJSON => this.setState({userItems: responseJSON, loading: false}));
     }
 
     // Makes a lot of reads on firebase?

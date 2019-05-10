@@ -31,11 +31,11 @@ class ItemListing extends Component {
     };
 
     render() {
-        const {currentUser, id, username, item, description, checkedOut} = this.props;
+        const {currentUser, username, item, description, checkedOut} = this.props;
         return (
             <div className="ItemListing">
                 {/* <div>
-                    Id: {id}
+                    Id: {this.props.id}
                 </div> */}
                 <div>
                     Username: {username}
