@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import './App.css';
 import ItemListings from './ItemListings';
@@ -11,19 +12,24 @@ class CampusSpaces extends Component {
         currentLocation: "duffield"
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         fetch('/api/locations', {method: 'GET'})
         .then(response => response.json())
         .then(responseJSON => this.setState({locations: responseJSON, loading: false}));
-        fetch('/api/items/' + this.state.currentLocation, {method: 'GET'})
+        // itemsCollection().onSnapshot((snapshot) => {
+        //     const items = snapshot.docs.map(doc => ({userId: doc.userId, ...doc.data()}));
+        //     console.log(items);
+        //     this.setState({ items : items });
+        // });
+        fetch('/api/items/location/' + this.state.currentLocation, {method: 'GET'})
         .then(response => response.json())
         .then(responseJSON => this.setState({items: responseJSON, loading: false}));
     }
 
     // Makes a lot of reads on firebase?
-    updateItems = async (location) => {
+    changeLocation = async (location) => {
         this.setState({loading: true});
-        fetch('/api/items/' + location, {method: 'GET'})
+        fetch('/api/items/location/' + location, {method: 'GET'})
         .then(response => response.json())
         .then(responseJSON => this.setState({currentLocation: location, items: responseJSON, loading: false}));
     }
@@ -40,11 +46,12 @@ class CampusSpaces extends Component {
                 <div className="currentUser">
                     <h1>Current User:</h1>
                     {this.props.currentUser}
+                    <button onClick={this.props.logout}>Logout</button>
                 </div>
 
                 <div className="locationSelect">
                     <h1>Select Location:</h1>
-                    <select onChange={(e) => this.updateItems(e.currentTarget.value)}>
+                    <select onChange={(e) => this.changeLocation(e.currentTarget.value)}>
                         {locationsDropdown}
                     </select>
                 </div>
@@ -54,11 +61,21 @@ class CampusSpaces extends Component {
                     this.state.items.length === 0 ? "No items listed!" : 
                     <ItemListings data={this.state.items}/>}
 
+                <h1>List of your things:</h1>
+                {this.state.loading ? "Loading..." : 
+                    this.state.items.length === 0 ? "No items listed!" : 
+                    <ItemListings 
+                        data={this.state.items}
+                        updateItems={(id, checkedOutBy) => this.setState(prevState => ({
+                            items: prevState.items.map(item => (item.id === id ? { ...item, checkedOut: checkedOutBy } : item))
+                        }))}
+                    />}
+
                 <h1>Add an item to {this.state.currentLocation}:</h1>
                 <AddItem 
                     username={this.props.currentUser}
                     location={this.state.currentLocation}
-                    updateItems={(i) => this.setState({items: i})}
+                    updateItems={(i) => this.setState(prevState => ({items: [i, ...prevState.items]}))}
                 />
             </div>
         );

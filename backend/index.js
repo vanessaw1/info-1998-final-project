@@ -6,10 +6,9 @@ const bodyParser = require('body-parser');
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://campus-spaces.firebaseio.com"
-  });
+});
 
 const db = admin.firestore();
-
 const app = express();
 const port =  process.env.PORT || 8080;
 app.use(bodyParser.json());
@@ -19,10 +18,17 @@ const locationsCollection = db.collection('locations');
 const usersCollection = db.collection('users');
 
 // Get items in a specific locaiton
-app.get('/api/items/:location', async (req, res) => {     
+app.get('/api/items/location/:location', async (req, res) => {     
     const location = req.params['location'];
     const itemsInLocation = await itemsCollection.where('location', '==', location).get();
-    res.status(200).json(itemsInLocation.docs.map(doc => ({userId: doc.userId, ...doc.data()})));
+    res.status(200).json(itemsInLocation.docs.map(doc => ({username: doc.username, ...doc.data()})));
+});
+
+// Get items by a specific user
+app.get('/api/items/user/:username', async (req, res) => {     
+    const username = req.params['username'];
+    const itemsByUser = await itemsCollection.where('username', '==', username).get();
+    res.status(200).json(itemsByUser.docs.map(doc => ({username: doc.username, ...doc.data()})));
 });
 
 // Get list of available locations
@@ -34,8 +40,25 @@ app.get('/api/locations', async (req, res) => {
 // Add an item
 app.post('/api/add-item', async (req, res) => {
     const item = req.body;
-    await itemsCollection.add(item);
-    res.status(200).send("added");
+    const addedItem = await itemsCollection.add(item);
+    res.status(200).send(addedItem.id);
+});
+
+// Upate item details (such as checking in/out)
+// Restrict to checking in/out?
+app.post('/api/items/:id', async (req, res) => {
+    const itemId = req.params['id'];
+    const updateItem = req.body;
+    await itemsCollection.doc(itemId).update(updateItem);
+    res.status(200).send("updated");
+});
+
+// Delete item
+// Restrict to item owner?
+app.delete('/api/items/:id', async (req, res) => {
+    const itemId = req.params['id'];
+    await itemsCollection.doc(itemId).delete();
+    res.status(200).send("deleted");
 });
 
 // Sign in

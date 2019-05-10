@@ -6,14 +6,14 @@ class ItemListings extends Component {
     render() {
         const {data} = this.props;
         const items = data.map((item, key) => 
-            
-                <ItemListing 
-                    key = {key}
-                    username={item.username}
-                    item={item.item}
-                    description={item.description}
-                    checkedOut={item.checkedOut}
-                />
+            <ItemListing 
+                key = {key}
+                id = {item.id}
+                username={item.username}
+                item={item.item}
+                description={item.description}
+                checkedOut={item.checkedOut}
+            />
         );
 
         return (

@@ -9,6 +9,8 @@ class AddItem extends Component {
     }
 
     handleSubmit = async e => {
+        const {item, description} = this.state;
+        const {username, location} = this.props;
         this.setState({loading: true});
         e.preventDefault();
         const resp = await fetch('/api/add-item', {
@@ -17,14 +19,15 @@ class AddItem extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: this.props.username,
-                item: this.state.item,
-                description: this.state.description,
-                location: this.props.location,
-                checkedOut: false
+                username: username,
+                item: item,
+                description: description,
+                location: location,
+                checkedOut: null
             })
         });
-        const items = await resp.text();
+        const id = await resp.text();
+        const items = {id, username, item, description, location};
         console.log(items);
         this.props.updateItems(items);
     };

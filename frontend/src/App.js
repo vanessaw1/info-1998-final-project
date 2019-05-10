@@ -15,6 +15,7 @@ class App extends Component {
       {this.state.isLoggedIn ? 
         <CampusSpaces 
           currentUser = {this.state.username}
+          logout = {() => this.setState({isLoggedIn: false})}
         />
         :
         <Login
