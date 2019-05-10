@@ -21,14 +21,7 @@ const usersCollection = db.collection('users');
 app.get('/api/items/location/:location', async (req, res) => {     
     const location = req.params['location'];
     const itemsInLocation = await itemsCollection.where('location', '==', location).get();
-    res.status(200).json(itemsInLocation.docs.map(doc => ({username: doc.username, ...doc.data()})));
-});
-
-// Get items by a specific user
-app.get('/api/items/user/:username', async (req, res) => {     
-    const username = req.params['username'];
-    const itemsByUser = await itemsCollection.where('username', '==', username).get();
-    res.status(200).json(itemsByUser.docs.map(doc => ({username: doc.username, ...doc.data()})));
+    res.status(200).json(itemsInLocation.docs.map(doc => ({id: doc.id, ...doc.data()})));
 });
 
 // Get list of available locations

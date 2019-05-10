@@ -10,6 +10,7 @@ class ItemListing extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                id: this.props.id,
                 checkedOut: checkoutTo
             })
         });
@@ -30,12 +31,12 @@ class ItemListing extends Component {
     };
 
     render() {
-        const {id, username, item, description, checkedOut} = this.props;
+        const {currentUser, id, username, item, description, checkedOut} = this.props;
         return (
             <div className="ItemListing">
-                <div>
+                {/* <div>
                     Id: {id}
-                </div>
+                </div> */}
                 <div>
                     Username: {username}
                 </div>
@@ -48,9 +49,19 @@ class ItemListing extends Component {
                 <div>
                     Checked out by: {checkedOut ? checkedOut : "No One"}
                 </div>
-                <button onClick={() => this.checkoutItem(this.props.username)}>Checkout Item</button>
-                <button onClick={() => this.checkoutItem(null)}>Return Item</button>
-                <button onClick={() => this.deleteItem(this.props.id)}>Remove Item</button>
+                {this.props.updateItem &&
+                    <>
+                        {(checkedOut === null) && <button onClick={() => this.checkoutItem(currentUser)}>Checkout Item</button>}
+                        {(checkedOut === currentUser) && <button onClick={() => this.checkoutItem(null)}>Return Item</button>}
+                        {(checkedOut !== null && checkedOut !== currentUser) && <button disabled>Checked Out</button>}
+                    </>
+                }
+                {this.props.deleteItem && (
+                    checkedOut === null ? 
+                        <button onClick={() => this.deleteItem(this.props.id)}>Remove Item</button> :
+                        <button disabled>Item Is Checked Out</button>
+                    )
+                }
             </div>
         );
     }

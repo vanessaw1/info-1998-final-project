@@ -4,10 +4,11 @@ import ItemListing from './ItemListing';
 
 class ItemListings extends Component {
     render() {
-        const {data, updateItem, deleteItem} = this.props;
+        const {data, currentUser, updateItem, deleteItem} = this.props;
         const items = data.map((item, key) => 
             <ItemListing 
                 key = {key}
+                currentUser = {currentUser}
                 id = {item.id}
                 username={item.username}
                 item={item.item}
